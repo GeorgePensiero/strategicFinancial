@@ -13,7 +13,15 @@ export default function Banks() {
     return (
         <div className="banks">
             <ul className="table">
-                {banks ? banks.map(bank => <li className="info" key={bank.id}>{bank.creditorName}</li>) : ''}
+                {banks ? banks.map(bank => {
+                    return <li className="info" key={bank.id}>
+                            <span>{bank.creditorName}</span>
+                            <span>{bank.firstName}</span>
+                            <span>{bank.lastName}</span>
+                            <span>{bank.minPaymentPercentage.toFixed(2) + "%" }</span>
+                            <span>{bank.balance}</span>
+                    </li>
+                }) : ''}
             </ul>
         </div>
     )
