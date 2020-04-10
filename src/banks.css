@@ -1,0 +1,48 @@
+ul {
+    list-style: none;
+}
+span {
+    display: inline-block;
+    width: 25%;
+
+}
+
+.table {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.list-headers {
+    display: flex;
+}
+
+.list-headers span {
+    font-weight: 700;
+    border: 1px solid black;
+    padding: 4px 0px;
+    display: flex;
+    align-items: center;
+}
+
+.bank-info {
+    display: flex;
+    width: 100%;
+}
+
+.bank-info span {
+    border: 1px solid gray;
+    padding: 4px 0px;
+    margin: 1px 1px;
+}
+
+.pay {
+    display: flex;
+    justify-content: flex-end;
+    width: 10%;
+}
+
+.balance {
+    display: flex;
+    justify-content: flex-end;
+}
