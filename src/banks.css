@@ -11,6 +11,7 @@ span {
     display: flex;
     flex-direction: column;
     width: 80%;
+    padding: 0;
 }
 
 .list-headers {
@@ -45,4 +46,14 @@ span {
 .balance {
     display: flex;
     justify-content: flex-end;
+}
+
+.total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+    margin: 0;
+    background: lightblue;
+    height: 25px;
 }
