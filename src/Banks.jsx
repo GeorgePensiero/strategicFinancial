@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import BankInfo from './BankInfo';
 import './banks.css';
 
 export default function Banks() {
@@ -36,18 +37,12 @@ export default function Banks() {
                     <span className="balance">Balance</span>
                 </li>
                 {banks ? banks.map(bank => {
-                    return <li className="bank-info" key={bank.id}>
-                            <span>{bank.creditorName}</span>
-                            <span>{bank.firstName}</span>
-                            <span>{bank.lastName}</span>
-                            <span className="pay">{bank.minPaymentPercentage.toFixed(2) + "%" }</span>
-                            <span className="balance">{bank.balance.toFixed(2)}</span>
-                    </li>
+                    return <BankInfo bank={bank} />
                 }) : ''}
             </ul>
             <div className="total">
                 <p>Total</p>
-                {"$" + totalBalance.toFixed(2)}
+                {"$" + totalBalance.toFixed(2).toLocaleString()}
             </div>
             <div className="row-counts">
                 {rowCt}
