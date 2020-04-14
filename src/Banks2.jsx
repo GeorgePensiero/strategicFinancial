@@ -4,7 +4,7 @@ import Checkbox from './Checkbox';
 export default class Banks2 extends Component {
     constructor(props) {
         super(props);
-
+        debugger
         this.state = {
             banks: null,
             checkStatus: [],
@@ -35,16 +35,19 @@ export default class Banks2 extends Component {
     checkAll = e => {
         let {allChecked, checkStatus} = this.state;
         let newStatus = [...checkStatus].map(status => !allChecked);
-        debugger
         this.setState({checkStatus: newStatus, allChecked: !allChecked});
     }
 
-    handleCheck = e => {
-        debugger
-        const checkId = e.target.id;
-        const isChecked = e.target.isChecked;
-        let newState = [...this.state.checkStatus].map((status, i) => i === checkId ? !status : status);
-        this.setState(prevState => ({checkStatus: newState}));
+    handleCheck = (e) => {
+        let {checkStatus} = this.state;
+        let newStatus = checkStatus.map((status, j) => {
+            if(e.target.id === j.toString()) {
+                return e.target.checked;
+            } else {
+                return status;
+            }
+        });
+        this.setState({checkStatus: newStatus});
     }
 
     render(){
@@ -53,7 +56,7 @@ export default class Banks2 extends Component {
             <div className="banks">
                 <ul className="table">
                     <li className="list-headers" key={"list-header"}>
-                        {/* <input type="checkbox" checked={allChecked ? allChecked : ''} onClick={this.checkAll} /> */}
+                        <input type="checkbox" checked={allChecked ? allChecked : ''} onChange={this.checkAll} />
                         <span>Creditor</span>
                         <span>First Name</span>
                         <span>Last Name</span>
@@ -63,7 +66,7 @@ export default class Banks2 extends Component {
                     {/* {checkStatus ? checkStatus.map((status, i) => <input type="checkbox" checked={status[i]} onClick={e => changeStatus(i)}/>) : ""} */}
                     <ul>
                         {checkStatus.map((status, i) => {
-                            return (<input type="checkbox" onClick={this.handleCheck} checked={status} />)
+                            return (<input type="checkbox" id={i} onChange={e => this.handleCheck(e)} checked={status} />)
                         })}
                     </ul>
                 </ul>
