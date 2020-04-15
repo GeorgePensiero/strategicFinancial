@@ -9,6 +9,7 @@ span {
 
 .banks {
     margin: 20px;
+    width: 650px;
 }
 
 .table {
@@ -133,5 +134,11 @@ span {
     align-self: center;
     margin-top: 20px;
     background-color: bisque;
+    border-radius: 4px;
+}
+
+.btns button {
+    background-color: cornflowerblue;
+    margin: 5px;
     border-radius: 4px;
 }

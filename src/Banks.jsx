@@ -34,7 +34,6 @@ export default class Banks extends Component {
             .then(res => res.json())
             .then(data => {
                 this.setup(data);
-                console.log(data);
             });
     }
 
@@ -118,7 +117,7 @@ export default class Banks extends Component {
                 <Modal show={show}>
                     <DebtForm addDebt={this.addDebt} />
                 </Modal>
-                <div>
+                <div className="btns">
                     <button onClick={this.showModal}>Add Debt</button>
                     <button onClick={this.removeDebt}>Remove Debt</button>
                 </div>
