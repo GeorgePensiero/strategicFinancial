@@ -63,6 +63,21 @@ export default class Banks2 extends Component {
         this.setState({balance: newBal});
     }
 
+    removeDebt = () => {
+        let {checkStatus, banks, checkedRows} = this.state;
+        let newStatus = [...checkStatus];
+        let newBanks = [...banks];
+
+        for(let i = 0; i < checkStatus.length; i++) {
+            if(checkStatus[i]) {
+                newStatus = newStatus.slice(0, i).concat(newStatus.slice(i+1));
+                newBanks = newBanks.slice(0, i).concat(newBanks.slice(i+1));
+            }
+        }
+
+        this.setState({checkStatus: newStatus, banks: newBanks, checkedRows: checkedRows - 1});
+    }
+
     render(){
         let {allChecked, checkStatus, banks, balance, checkedRows} = this.state;
         return (
@@ -80,13 +95,17 @@ export default class Banks2 extends Component {
                 <ul className="bank-info">
                     {banks ? banks.map((bank, i) => <BankInfo handleCheck={this.handleCheck} bank={bank} idx={i} status={checkStatus[i]}/>) : ""}
                 </ul>
+                <div>
+                    <button>Add Debt</button>
+                    <button onClick={this.removeDebt}>Remove Debt</button>
+                </div>
                 <div className="total">
                     <p>Total</p>
                     {"$" + balance.toFixed(2).toLocaleString()}
                 </div>
                 <div className="row-counts">
-                    {banks ? banks.length : ""}
-                    {checkedRows}
+                    <p>Total Row Count: {banks ? banks.length : ""}</p>
+                    <p>Check Row Count: {checkedRows}</p>
                 </div>
             </div>
         )
