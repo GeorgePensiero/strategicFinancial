@@ -29,23 +29,23 @@ export default class DebtForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label>Creditor: 
+            <form className="form" onSubmit={this.handleSubmit}>
+                <label className="label">Creditor: 
                     <input type="text" value={this.state.creditor} onChange={this.update('creditor')}/>
                 </label>
-                <label>First Name: 
+                <label className="label">First Name: 
                     <input type="text" value={this.state.firstName} onChange={this.update('firstName')}/>
                 </label>
-                <label>Last Name:
+                <label className="label">Last Name:
                     <input type="text" value={this.state.lastName} onChange={this.update('lastName')}/>
                 </label>
-                <label>min pay%: 
+                <label className="label">min pay%: 
                     <input type="text" value={this.state.minPay} onChange={this.update('minPay') }/>
                 </label>
-                <label>
+                <label className="label">Balance: 
                     <input type="text" value={this.state.balance} onChange={this.update('balance')}/>
                 </label>
-                <button onClick={this.handleSubmit}>Add</button>
+                <button className="submit-btn" onClick={this.handleSubmit}>Add</button>
             </form>
         )
     }

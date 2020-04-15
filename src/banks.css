@@ -7,15 +7,25 @@ span {
 
 }
 
+.banks {
+    margin: 20px;
+}
+
 .table {
     display: flex;
     flex-direction: column;
     width: 80%;
     padding: 0;
+    margin: 0;
 }
 
 .list-headers {
     display: flex;
+}
+
+.list-headers input {
+    align-self: center;
+    margin-right: 8px;
 }
 
 .list-headers span {
@@ -31,16 +41,27 @@ span {
     width: 80%;
     flex-direction: column;
     padding: 0;
+    margin-top: 0;
 }
 
 .bank-info span {
     border: 1px solid gray;
     padding: 4px 0px;
     margin: 1px 1px;
+    overflow: hidden;
+}
+
+.unchosen span {
+    background-color: pink;
 }
 
 .bank {
     display: flex;
+    align-items: center;
+}
+
+.bank input {
+    margin-right: 8px;
 }
 
 .pay {
@@ -89,4 +110,28 @@ span {
 
 .hide {
   display: none;
+}
+
+.form {
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.label input {
+    width: 400px;
+    border-radius: 4px;
+}
+
+.submit-btn {
+    align-self: center;
+    margin-top: 20px;
+    background-color: bisque;
+    border-radius: 4px;
 }
