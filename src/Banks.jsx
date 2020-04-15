@@ -1,94 +1,136 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {Component} from 'react';
 import BankInfo from './BankInfo';
+import Modal from './modal';
+import DebtForm from './DebtForm';
 import './banks.css';
 
-export default function Banks() {
-    const [data, updateData] = useState(null);
-    const [totalBalance, updateTotal] = useState(0);
-    const [checkStatus, updateStatus] = useState([]);
-    const [components, updateComponents] = useState(null);
-    const [rowCt, updateRowCt] = useState(0);
-    const [checkedRowCt, updateCheckedRows] = useState(0);
-    const [allChecked, toggleAll] = useState(false);
-    const statusRef = useRef(checkStatus);
-    const dataRef = useRef(data);
-    // fetch JSON data after component mounts
-    useEffect(() => {
+export default class Banks extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            banks: null,
+            checkStatus: [],
+            allChecked: false,
+            balance: 0,
+            checkedRows: 0,
+            show: false
+        }
+        this.setup = this.setup.bind(this);
+    }
+
+    setup(data){
+        let status = [];
+        this.setState({banks: data});
+        if(!this.state.checkStatus.length){
+            for(let i = 0; i < data.length; i++) {
+                status.push(false);
+            }
+            this.setState({checkStatus: status});
+        }
+    }
+
+    componentDidMount(){
         fetch("https://raw.githubusercontent.com/StrategicFS/Recruitment/master/data.json")
             .then(res => res.json())
             .then(data => {
-                updateData(data);
-                let bal = 0;
-                data.forEach(bank => bal += bank.balance);
-                updateTotalBal(bal);
-                updateRowCt(data.length);
-                createCheckStatus(data);
-                createComponents(data);
+                this.setup(data);
+                console.log(data);
             });
-    }, []);
-
-    function updateTotalBal(bal){
-        updateTotal(totalBalance => totalBalance + bal);
     }
 
-    function createCheckStatus(data){
-        let status = data.map(bank => false);
-        updateStatus(status);
-    }
-
-
-    function createComponents(data, status) {
-        debugger
-        let components = data.map((bank, i) => {
-            return (
-                <li className="bank-info" key={bank.id}>
-                    <input type="checkbox" defaultChecked={status[i] ? status[i] : ''} onClick={e => changeStatus(i)} />
-                    <BankInfo bank={bank} />
-                </li>
-            )
-
-        })
-        updateComponents(components);
-    }
-
-    function changeStatus(i) {
-        let newStatus = [...checkStatus];
-        newStatus[i] = !checkStatus[i];
-        updateStatus(newStatus);
-    }
-
-    function toggleAllChecks() {
+    checkAll = async e => {
+        let {allChecked, checkStatus} = this.state;
         let newStatus = [...checkStatus].map(status => !allChecked);
-        newStatus = updateStatus(newStatus);
-        toggleAll(!allChecked);
-        createComponents(data, newStatus);
+        let numRowsChecked = !allChecked ? checkStatus.length : 0;
+        this.setState({checkStatus: newStatus, allChecked: !allChecked, checkedRows: numRowsChecked}, () => this.getBalance());
     }
 
+    handleCheck = async (e) => {
+        let {checkStatus, checkedRows} = this.state;
+        //check whether to increment or decrement checkd rows
+        let numChecks = e.target.checked ? 1 : -1;
+        let newStatus = checkStatus.map((status, j) => {
+            if(e.target.id === j.toString()) {
+                return e.target.checked;
+            } else {
+                return status;
+            }
+        });
+        this.setState({checkStatus: newStatus, checkedRows: checkedRows + numChecks}, () => this.getBalance());
+    }
 
-    return (
-        <div className="banks">
-            <ul className="table">
-                <li className="list-headers" key={"list-header"}>
-                    <input type="checkbox" defaultChecked={allChecked ? allChecked : ''} onClick={e => toggleAllChecks()}/>
-                    <span>Creditor</span>
-                    <span>First Name</span>
-                    <span>Last Name</span>
-                    <span className="pay">Min Pay%</span>
-                    <span className="balance">Balance</span>
-                </li>
-                {/* {checkStatus ? checkStatus.map((status, i) => <input type="checkbox" checked={status[i]} onClick={e => changeStatus(i)}/>) : ""} */}
-                <ul>
-                    {components}
+    getBalance = () => {
+        let {checkStatus, banks} = this.state;
+        let newBal = 0;
+        for(let i = 0; i < checkStatus.length; i++){
+            if(checkStatus[i]) newBal += banks[i].balance;
+        }
+        this.setState({balance: newBal});
+    }
+
+    removeDebt = () => {
+        let {checkStatus, banks, checkedRows} = this.state;
+        let newStatus = [...checkStatus];
+        let newBanks = [...banks];
+        let numRemoved = 0;
+        let i = 0;
+        while(i < newStatus.length) {
+            if(newStatus[i]) {
+                numRemoved++;
+                newStatus = newStatus.slice(0, i).concat(newStatus.slice(i+1));
+                newBanks = newBanks.slice(0, i).concat(newBanks.slice(i+1));
+            } else {
+                i++;
+            }
+        }
+        this.setState({checkStatus: newStatus, banks: newBanks, checkedRows: checkedRows - numRemoved, balance: 0});
+    }
+
+    showModal = () => {
+        this.setState({show: true});
+    }
+
+    addDebt = bank => {
+        let banks = [...this.state.banks];
+        let checkStatus = [...this.state.checkStatus];
+        banks.push(bank);
+        checkStatus.push(false);
+        this.setState({banks: banks, show: false, checkStatus: checkStatus});
+    }
+
+    render(){
+        let {allChecked, checkStatus, banks, balance, checkedRows, show} = this.state;
+        return (
+            <div className="banks">
+                <ul className="table">
+                    <li className="list-headers" key={"list-header"}>
+                        <input type="checkbox" checked={allChecked ? allChecked : ''} onChange={this.checkAll} />
+                        <span>Creditor</span>
+                        <span>First Name</span>
+                        <span>Last Name</span>
+                        <span className="pay">Min Pay%</span>
+                        <span className="balance">Balance</span>
+                    </li>                    
                 </ul>
-            </ul>
-            <div className="total">
-                <p>Total</p>
-                {"$" + totalBalance.toFixed(2).toLocaleString()}
+                <ul className="bank-info">
+                    {banks ? banks.map((bank, i) => <BankInfo handleCheck={this.handleCheck} bank={bank} idx={i} status={checkStatus[i]}/>) : ""}
+                </ul>
+                <Modal show={show}>
+                    <DebtForm addDebt={this.addDebt} />
+                </Modal>
+                <div>
+                    <button onClick={this.showModal}>Add Debt</button>
+                    <button onClick={this.removeDebt}>Remove Debt</button>
+                </div>
+                <div className="total">
+                    <p>Total</p>
+                    {"$" + balance.toFixed(2).toLocaleString()}
+                </div>
+                <div className="row-counts">
+                    <p>Total Row Count: {banks ? banks.length : ""}</p>
+                    <p>Check Row Count: {checkedRows}</p>
+                </div>
             </div>
-            <div className="row-counts">
-                {rowCt}
-                {checkedRowCt}
-            </div>
-        </div>
-    )
-};
+        )
+    }
+}
