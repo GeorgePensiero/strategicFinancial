@@ -9,6 +9,7 @@ export default class Banks2 extends Component {
             checkStatus: [],
             allChecked: false,
             balance: 0,
+            checkedRows: 0
         }
         this.setup = this.setup.bind(this);
     }
@@ -35,11 +36,14 @@ export default class Banks2 extends Component {
     checkAll = async e => {
         let {allChecked, checkStatus} = this.state;
         let newStatus = [...checkStatus].map(status => !allChecked);
-        this.setState({checkStatus: newStatus, allChecked: !allChecked}, () => this.getBalance());
+        let numRowsChecked = !allChecked ? checkStatus.length : 0;
+        this.setState({checkStatus: newStatus, allChecked: !allChecked, checkedRows: numRowsChecked}, () => this.getBalance());
     }
 
     handleCheck = async (e) => {
-        let {checkStatus} = this.state;
+        let {checkStatus, checkedRows} = this.state;
+        //check whether to increment or decrement checkd rows
+        let numChecks = e.target.checked ? 1 : -1;
         let newStatus = checkStatus.map((status, j) => {
             if(e.target.id === j.toString()) {
                 return e.target.checked;
@@ -47,7 +51,7 @@ export default class Banks2 extends Component {
                 return status;
             }
         });
-        this.setState({checkStatus: newStatus}, () => this.getBalance());
+        this.setState({checkStatus: newStatus, checkedRows: checkedRows + numChecks}, () => this.getBalance());
     }
 
     getBalance = () => {
@@ -60,7 +64,7 @@ export default class Banks2 extends Component {
     }
 
     render(){
-        let {allChecked, checkStatus, banks, balance} = this.state;
+        let {allChecked, checkStatus, banks, balance, checkedRows} = this.state;
         return (
             <div className="banks">
                 <ul className="table">
@@ -81,8 +85,8 @@ export default class Banks2 extends Component {
                     {"$" + balance.toFixed(2).toLocaleString()}
                 </div>
                 <div className="row-counts">
-                    {/* {rowCt} */}
-                    {/* {checkedRowCt} */}
+                    {banks ? banks.length : ""}
+                    {checkedRows}
                 </div>
             </div>
         )
